@@ -1,0 +1,122 @@
+# Solidity中的重载
+
+## 方法重载
+
+Solidity允许开发人员更改父合约中的函数在派生类中的实现方式。这被称为函数重写。
+
+父合约中的函数需要用关键字virtual声明，以表明它可以在派生合约中被重写。
+
+另外，重载函数需要override关键字。您可能希望您的重写函数被另一个函数覆盖。这是可以接受的，可以像以前一样使用virtual关键字来实现。下面是一个在Solidity中演示函数重写的例子:
+
+```solidity
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.7.0 <0.9.0;
+
+contract Base
+{
+    function foo() virtual external view {}
+}
+
+contract Middle is Base {}
+
+contract Inherited is Middle
+{
+    function foo() override public pure {}
+}
+```
+
+如果基函数被标记为visual函数，可以通过继承合约来重写它们的行为。 然后，重写函数必须在函数头中使用override关键字。 覆盖函数只能将被覆盖函数的可见性从external更改为public。 可变性可以更改为一个更严格的顺序:不可支付可以被view和pure重写。 view可以被pure重写。 payable是一个例外，不能更改为任何其他可变性。
+
+```solidity
+pragma solidity >=0.7.0 <0.9.0;
+
+contract Base1
+{
+    function foo() virtual public {}
+}
+
+contract Base2
+{
+    function foo() virtual public {}
+}
+
+contract Inherited is Base1, Base2
+{
+    // 继承自两个基类合约定义的foo(), 必须显示的指定 override
+    function foo() public override(Base1, Base2) {}
+}
+```
+
+
+
+如果函数是在公共base合约中定义的，或者公共base合约中有一个惟一的函数已经覆盖了所有其他函数，则不需要显式重写说明符。
+
+```solidity
+pragma solidity >=0.7.0 <0.9.0;
+
+contract A { function f() public pure{} }
+contract B is A {}
+contract C is A {}
+// 不用显示  override
+contract D is B, C {}
+```
+
+ 更正式地说，如果存在父合约是签名函数的所有重写路径的一部分，则不需要重写（直接或间接）从多个基础继承的函数，并且（1）父合约实现了该函数，从当前合约到父合约的路径都没有提到具有该签名的函数，或者（2）父合约没有实现该函数，并且存在从当前合约到该父合约的所有路径中，最多只能提及该函数。
+
+从这个意义上说，签名函数的重写路径是通过继承图的路径，该路径始于所考虑的合约，并终止于提及具有该签名的函数的合约。
+
+如果函数没有标记为 `virtual` ， 那么派生合约将不能更改函数的行为（即不能重写）。
+
+
+
+### 注意事项:
+
+`private` 的函数是不可以标记为 `virtual` 的
+
+除接口之外（因为接口会自动作为 `virtual` ），没有实现的函数必须标记为 `virtual`从 Solidity 0.8.8 开始, 在重写接口函数时不再要求 `override` 关键字，除非函数在多个父合约定义
+
+尽管public 的状态变量可以重写外部函数，但是public 的状态变量不能被重写。
+
+
+
+
+
+## 修饰器重载
+
+修改器重写也可以被重写，工作方式和 [函数重写](https://learnblockchain.cn/docs/solidity/contracts.html#function-overriding) 类似。 需要被重写的修改器也需要使用 `virtual` 修饰， `override` 则同样修饰重载，例如：
+
+```solidity
+pragma solidity >=0.7.0 <0.9.0;
+
+contract Base
+{
+    modifier foo() virtual {_;}
+}
+
+contract Inherited is Base
+{
+    modifier foo() override {_;}
+}
+```
+
+如果是多重继承，所有直接父合约必须显示指定override， 例如：
+
+```solidity
+pragma solidity >=0.7.0 <0.9.0;
+
+contract Base1
+{
+    modifier foo() virtual {_;}
+}
+
+contract Base2
+{
+    modifier foo() virtual {_;}
+}
+
+contract Inherited is Base1, Base2
+{
+    modifier foo() override(Base1, Base2) {_;}
+}
+```
+
