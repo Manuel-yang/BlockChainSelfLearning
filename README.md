@@ -14,9 +14,9 @@
   - Defi开发简介
   - UniswapV2 --- 从代码解释DeFi协议
 - Solidity
-  - 1-13 Solidity语言基础
+  - Solidity基础
   - Solidity实战开发
-  - Solidity中的Keccak256
+  - 如何部署和使用可升级的智能合约
   - 如何在不使用 for 循环的情况下在 Solidity 中获取数组数据
 - 区块链基础
   - 区块链中的15中共识算法
