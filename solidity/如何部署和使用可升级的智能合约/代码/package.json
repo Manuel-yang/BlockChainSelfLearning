@@ -1,0 +1,21 @@
+{
+  "name": "upgrade_contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "hardhat.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@openzeppelin/hardhat-upgrades": "^1.23.1",
+    "hardhat": "^2.14.0"
+  },
+  "dependencies": {
+    "@chainlink/contracts": "^0.6.1",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "@openzeppelin/contracts": "^4.8.3",
+    "dotenv": "^16.0.3"
+  }
+}
